@@ -70,7 +70,7 @@
 #' )
 #' 
 #' @export
-iterake <- function(universe, wgt.name = "weight", max.wgt = 3, 
+iterake <- function(universe, wgt.name = "weight", max.wgt = 3, min.wgt = 0,
                     threshold = 1e-10, max.iter = 50, stuck.limit = 5, 
                     permute = FALSE, summary = TRUE) {
     
@@ -266,7 +266,8 @@ iterake <- function(universe, wgt.name = "weight", max.wgt = 3,
                 
                 # creates the weight factor, max out at the weight limit
                 to_weight <- 
-                    DT_merge[, wgt := ifelse(wgt * wgt_temp > max.wgt, max.wgt, wgt * wgt_temp)] %>%
+                    DT_merge[, wgt := ifelse(wgt * wgt_temp > max.wgt, max.wgt,
+                                             ifelse(wgt * wgt_temp < min.wgt, min.wgt, wgt * wgt_temp))] %>%
                     
                     # temporary weight no longer needed
                     .[, wgt_temp := NULL]
